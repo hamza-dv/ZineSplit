@@ -1,0 +1,16 @@
+{
+  "name": "zinesplit",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Read your printed zine as a book.",
+  "license": "MIT",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "android:build": "tauri android build --apk"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}

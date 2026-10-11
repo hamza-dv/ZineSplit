@@ -1,0 +1,149 @@
+name: Release
+
+# Builds ZineSplit for Windows, Linux and Android and attaches the files to a
+# GitHub Release. Runs when a version tag (v1.2.0) is pushed, or by hand from
+# the Actions tab.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  release:
+    name: Create draft release
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: meta
+        run: |
+          version=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+      - name: Create or reuse the draft release
+        run: |
+          tag=${{ steps.meta.outputs.tag }}
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            awk -v v="## ${{ steps.meta.outputs.version }}" '$0==v{f=1;next} /^## /{f=0} f' CHANGELOG.md > notes.md
+            gh release create "$tag" --draft --title "ZineSplit $tag" --notes-file notes.md --target "$GITHUB_SHA"
+          fi
+      - name: Attach the browser version
+        run: |
+          cp index.html "ZineSplit-${{ steps.meta.outputs.version }}.html"
+          gh release upload "${{ steps.meta.outputs.tag }}" "ZineSplit-${{ steps.meta.outputs.version }}.html" --clobber
+
+  desktop:
+    name: Build ${{ matrix.name }}
+    needs: release
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            os: windows-latest
+          - name: Linux
+            os: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - name: Install Linux build libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - run: npm ci
+      - run: npx tauri build
+      - name: Upload to the release
+        shell: bash
+        run: |
+          v=${{ needs.release.outputs.version }}
+          b=src-tauri/target/release/bundle
+          mkdir out
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cp $b/nsis/*-setup.exe "out/ZineSplit-$v-windows-setup.exe"
+            cp $b/msi/*.msi        "out/ZineSplit-$v-windows.msi"
+          else
+            cp $b/appimage/*.AppImage "out/ZineSplit-$v-linux-x86_64.AppImage"
+            cp $b/deb/*.deb           "out/ZineSplit-$v-linux-amd64.deb"
+            cp $b/rpm/*.rpm           "out/ZineSplit-$v-linux-x86_64.rpm"
+          fi
+          gh release upload "${{ needs.release.outputs.tag }}" out/* --clobber
+
+  android:
+    name: Build Android
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: android-actions/setup-android@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - name: Build the APK
+        env:
+          NDK_HOME: ${{ env.ANDROID_NDK_LATEST_HOME }}
+        run: |
+          npx tauri android init --ci
+          npx tauri icon assets/icon.svg
+          npx tauri android build --apk --target aarch64 armv7 x86_64
+      - name: Sign the APK
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          v=${{ needs.release.outputs.version }}
+          tools="$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)"
+          apk=$(find src-tauri/gen/android/app/build/outputs/apk -name '*-release-unsigned.apk' | head -1)
+          "$tools/zipalign" -f -p 4 "$apk" aligned.apk
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > release.p12
+            ks=release.p12; pass="$KEYSTORE_PASSWORD"; alias=zinesplit
+          else
+            # No release key configured yet: sign with a throwaway key so the
+            # APK still installs. Updates will need a reinstall once a real key is set.
+            echo "::warning::ANDROID_KEYSTORE_B64 is not set; signing the APK with a temporary key."
+            pass=temporary; alias=temp; ks=temp.p12
+            keytool -genkeypair -storetype PKCS12 -keystore $ks -alias $alias -keyalg RSA -keysize 2048 \
+              -validity 10000 -storepass $pass -keypass $pass -dname "CN=ZineSplit test"
+          fi
+          mkdir out
+          "$tools/apksigner" sign --ks "$ks" --ks-key-alias "$alias" --ks-pass "pass:$pass" \
+            --out "out/ZineSplit-$v-android.apk" aligned.apk
+          "$tools/apksigner" verify "out/ZineSplit-$v-android.apk"
+          rm -f release.p12
+      - run: gh release upload "${{ needs.release.outputs.tag }}" out/* --clobber
+
+  publish:
+    name: Publish release
+    needs: [release, desktop, android]
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh release edit "${{ needs.release.outputs.tag }}" --draft=false --latest -R "$GITHUB_REPOSITORY"
