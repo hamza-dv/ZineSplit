@@ -17,15 +17,16 @@
 
 ---
 
-Export each printed sheet of your zine as an image and drop the images in. ZineSplit cuts every image down the middle, puts the pages back in reading order, and stands the zine on your shelf with its cover facing out. Open it to read as two-page spreads, or export it as a **PDF in page order** or as **separate page images** for printing.
+Export each printed sheet of your zine as an image and drop the images in, or import the zine as a PDF. ZineSplit cuts every image down the middle, puts the pages back in reading order, and stands the zine on your shelf with its cover facing out. Open it to read as two-page spreads, or export it as a **PDF in page order** or as **separate page images** for printing.
 
-<p align="center"><img alt="The shelf: four zines standing cover-out like a magazine rack" src="docs/shelf.png" width="860"></p>
+<p align="center"><img alt="The shelf: four zines standing cover-out like a magazine rack, with Add a sample zine, Import a PDF and Add a zine buttons" src="docs/shelf.png" width="860"></p>
 
 It's a single HTML page. There's nothing to install, and your artwork never leaves your computer.
 
 ## Features
 
 - **The shelf.** A magazine rack holding all your zines, front covers out. Zines are saved in your browser, so they are there next time.
+- **Import a PDF.** Bring in a zine that is already a PDF: single pages in reading order, printed sheets in folded order, or two pages per PDF page.
 - **Cut and reorder.** Each sheet is cut down the middle and the pages go back into reading order, front cover first and back cover last.
 - **Read as a book.** Two-page spreads with a page turn, arrow keys, swipe, numbered page buttons, and a full screen mode that shows only the pages.
 - **Export a PDF.** One PDF with every page in reading order, cut from your sheets.
@@ -36,10 +37,12 @@ It's a single HTML page. There's nothing to install, and your artwork never leav
 ## Quick start
 
 1. **Open ZineSplit.** Use the [online version](https://hamza-dv.github.io/ZineSplit/), or download this repo (**Code → Download ZIP**), unzip it and double-click `index.html`.
-2. **Add a zine.** Choose **Add a zine** on the shelf, give it a name and pick the page count (4, 8, 12 ... 48). A 24-page zine needs 12 images.
+2. **Add a zine.** Choose **Add a zine** on the shelf, give it a name and pick the page count (4, 8, 12 ... 96). A 24-page zine needs 12 images.
 3. **Drop each sheet when prompted.** ZineSplit asks for one image at a time, for example *"Drop the image with pages 6 and 19"*. Drop files anywhere on the window or use **Choose image**. Dropping several files at once fills the next sheets in file-name order.
 4. **Read or shelve it.** **Read your zine** opens it as a book; **Save to shelf** puts it away for later.
 5. **Export.** On the shelf, hover over a zine for **PDF** and **Images**. In the reader, use **Export PDF** and **Page images** in the top bar.
+
+Already have the zine as a PDF? Choose **Import a PDF** on the shelf (or drop the PDF onto it), name it, and pick how the PDF is laid out. ZineSplit guesses for you: portrait pages are read as single pages, landscape pages as printed sheets.
 
 No sheets ready yet? Choose **Add a sample zine** on the shelf.
 
@@ -121,7 +124,13 @@ Each page is cut from its sheet at full size and written into the PDF as a JPEG,
 <details>
 <summary><b>Is my artwork uploaded anywhere?</b></summary>
 
-No. Images are read and stored only in your browser, even when you use the online version.
+No. Images and PDFs are read and stored only in your browser, even when you use the online version.
+</details>
+
+<details>
+<summary><b>My PDF will not import.</b></summary>
+
+Password-protected PDFs cannot be opened; remove the password and try again. Very long PDFs use a lot of memory, so on a phone try exporting the PDF at a lower resolution. A zine can have up to 96 pages.
 </details>
 
 <details>
@@ -132,17 +141,16 @@ Large images use a lot of memory. Export at 150 dpi or lower for phones and olde
 
 ## How it works
 
-ZineSplit never edits your images. Each page is a box showing one half of a sheet image, and a page's position in the book decides which half of which image it shows, using standard folded-booklet order: for an N-page zine, the front of sheet *k* is pages N−2k | 2k+1 and the back is 2k+2 | N−2k−1. The page turn is a CSS 3D rotation, and the PDF and ZIP writers are built in.
+ZineSplit never edits your images. Each page is a box showing one half of a sheet image, and a page's position in the book decides which half of which image it shows, using standard folded-booklet order: for an N-page zine, the front of sheet *k* is pages N−2k | 2k+1 and the back is 2k+2 | N−2k−1. The page turn is a CSS 3D rotation, and the PDF and ZIP writers are built in. Imported PDFs are drawn with [PDF.js](https://mozilla.github.io/pdf.js/) and joined into sheet images, so they behave like any other zine.
 
-The whole app is [`index.html`](index.html) plus a `fonts` folder: no frameworks, no build step, no dependencies.
+The whole app is [`index.html`](index.html) plus a `fonts` folder and a `vendor` folder holding PDF.js (Apache 2.0, loaded only when you import a PDF): no frameworks, no build step, nothing to install.
 
 ## Contributing
 
-Issues and pull requests are welcome. Edit `index.html`, open it in a browser, and test with **Add a sample zine**.
+Issues and pull requests are welcome. Edit `index.html`, open it in a browser, and test with **Add a sample zine** and **Import a PDF**.
 
 Ideas that would be useful:
 
-- Open a single PDF and treat each page as a sheet
 - Right-to-left reading order
 
 ## License

@@ -5,6 +5,7 @@
 - Import a PDF from the shelf (or drop one on it): single pages in reading order, printed sheets in folded order, or two pages per PDF page.
 - Zines can now have up to 96 pages.
 - On iPhone, exported PDFs save to Files.
+- PDF.js is bundled in `vendor/`, so PDF import works offline too.
 
 ## 2.0.0
 
