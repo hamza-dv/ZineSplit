@@ -28,7 +28,7 @@
   "bundle": {
     "active": true,
     "targets": ["nsis", "msi", "appimage", "deb", "rpm"],
-    "category": "Graphics",
+    "category": "GraphicsAndDesign",
     "shortDescription": "Read your printed zine as a book.",
     "longDescription": "Drop in the printed sheets of your zine and ZineSplit cuts each one down the middle, puts the pages back in reading order, and shows the zine as two-page spreads you can turn.",
     "copyright": "Copyright (c) 2026 Hamza",
