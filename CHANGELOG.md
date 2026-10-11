@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0
+
+- Import a PDF from the shelf (or drop one on it): single pages in reading order, printed sheets in folded order, or two pages per PDF page.
+- Zines can now have up to 96 pages.
+- On iPhone, exported PDFs save to Files.
+
 ## 2.0.0
 
 - New shelf: a magazine rack where every zine stands with its front cover out. Add, open and remove zines; they are saved on the device.
