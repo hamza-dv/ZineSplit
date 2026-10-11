@@ -8,21 +8,11 @@
 <p align="center"><b>Read your printed zine as a book.</b></p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/hamza-dv/ZineSplit?style=flat-square&color=c9242b&label=release"></a>
-  <img alt="Windows" src="https://img.shields.io/badge/Windows-0078D4?style=flat-square&logo=windows&logoColor=white">
-  <img alt="Linux" src="https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black">
-  <img alt="Android" src="https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white">
-  <a href="https://hamza-dv.github.io/zinesplit-app/"><img alt="iOS web app" src="https://img.shields.io/badge/iOS-web%20app-000000?style=flat-square&logo=apple&logoColor=white"></a>
-  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-161d24?style=flat-square"></a>
-</p>
-
-<p align="center">
-  <a href="#get-zinesplit">Get it</a> ·
+  <a href="https://hamza-dv.github.io/ZineSplit/"><b>Try it in your browser</b></a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#controls">Controls</a> ·
   <a href="#preparing-your-images">Preparing images</a> ·
-  <a href="#faq">FAQ</a> ·
-  <a href="#development">Development</a>
+  <a href="#faq">FAQ</a>
 </p>
 
 ---
@@ -31,37 +21,25 @@ Export each printed sheet of your zine as an image and drop the images in. ZineS
 
 <p align="center"><img alt="The shelf: four zines standing cover-out like a magazine rack" src="docs/shelf.png" width="860"></p>
 
-Everything runs on your device. Your artwork is never uploaded anywhere.
+It's a single HTML page. There's nothing to install, and your artwork never leaves your computer.
 
 ## Features
 
-- **The shelf.** A magazine rack holding all your zines, front covers out. Zines are saved on your device, so they are there next time.
+- **The shelf.** A magazine rack holding all your zines, front covers out. Zines are saved in your browser, so they are there next time.
 - **Cut and reorder.** Each sheet is cut down the middle and the pages go back into reading order, front cover first and back cover last.
 - **Read as a book.** Two-page spreads with a page turn, arrow keys, swipe, numbered page buttons, and a full screen mode that shows only the pages.
 - **Export a PDF.** One PDF with every page in reading order, cut from your sheets.
 - **Export page images.** A ZIP of lossless PNGs (`page-01.png`, `page-02.png` ...) in reading order.
 - **Proof as you go.** Read a zine before every sheet is in; missing sheets show as blank pages.
-- **Dark and light themes**, and it works fully offline.
-
-## Get ZineSplit
-
-| Platform | Get it | How to run it |
-|---|---|---|
-| **Windows 10 / 11** | [`ZineSplit-x.y.z-windows-setup.exe`](../../releases/latest) | Double-click to install, or use the `-windows-portable.exe`, which runs without installing. If SmartScreen appears, choose **More info → Run anyway** (the app is not code-signed). |
-| **Linux** | [`ZineSplit-x.y.z-linux-x86_64.AppImage`](../../releases/latest) | `chmod +x` it and run it. On Debian / Ubuntu you can instead `sudo apt install ./ZineSplit-*.deb`. |
-| **Android 7+** | [`ZineSplit-x.y.z-android.apk`](../../releases/latest) | Open it on your phone and allow installs from your browser or file manager the first time. New versions install over the old one and keep your shelf. |
-| **iPhone / iPad** | **[hamza-dv.github.io/zinesplit-app](https://hamza-dv.github.io/zinesplit-app/)** | Open the link in **Safari**, then tap **Share → Add to Home Screen**. It opens full screen with its own icon and keeps your shelf on the device. |
-| **Any browser** | [`ZineSplit-x.y.z.html`](../../releases/latest) | One file with everything inside. Double-click it to open. Nothing to install. |
-
-All downloads are on the **[latest release](../../releases/latest)** page.
+- **Dark and light themes**, and it works offline.
 
 ## Quick start
 
-1. **Add a zine.** Open ZineSplit and choose **Add a zine** on the shelf.
-2. **Name it and pick the page count** (4, 8, 12 ... 48). A 24-page zine needs 12 images.
+1. **Open ZineSplit.** Use the [online version](https://hamza-dv.github.io/ZineSplit/), or download this repo (**Code → Download ZIP**), unzip it and double-click `index.html`.
+2. **Add a zine.** Choose **Add a zine** on the shelf, give it a name and pick the page count (4, 8, 12 ... 48). A 24-page zine needs 12 images.
 3. **Drop each sheet when prompted.** ZineSplit asks for one image at a time, for example *"Drop the image with pages 6 and 19"*. Drop files anywhere on the window or use **Choose image**. Dropping several files at once fills the next sheets in file-name order.
 4. **Read or shelve it.** **Read your zine** opens it as a book; **Save to shelf** puts it away for later.
-5. **Export.** On the shelf, hover over a zine (or tap it on a phone) for **PDF** and **Images**. In the reader, use **Export PDF** and **Page images** in the top bar.
+5. **Export.** On the shelf, hover over a zine for **PDF** and **Images**. In the reader, use **Export PDF** and **Page images** in the top bar.
 
 No sheets ready yet? Choose **Add a sample zine** on the shelf.
 
@@ -131,7 +109,7 @@ ZineSplit expects landscape images that split into two pages. Export each printe
 <details>
 <summary><b>Where are my zines stored?</b></summary>
 
-In the app's own storage on your device. Updating the app keeps them. Uninstalling the app, or clearing site data in a browser, removes them, so keep your original sheet images.
+In your browser's storage on this computer. Clearing site data for the page removes them, so keep your original sheet images.
 </details>
 
 <details>
@@ -143,13 +121,7 @@ Each page is cut from its sheet at full size and written into the PDF as a JPEG,
 <details>
 <summary><b>Is my artwork uploaded anywhere?</b></summary>
 
-No. Images are read and stored only on your device, and ZineSplit works offline.
-</details>
-
-<details>
-<summary><b>Why is iPhone a web link and not a download?</b></summary>
-
-iPhones only install apps through Apple, and they can't run a downloaded HTML file. Added to the Home Screen from Safari, the web app behaves like an installed app and works offline.
+No. Images are read and stored only in your browser, even when you use the online version.
 </details>
 
 <details>
@@ -160,50 +132,15 @@ Large images use a lot of memory. Export at 150 dpi or lower for phones and olde
 
 ## How it works
 
-ZineSplit never edits your images. Each page is a box showing one half of a sheet image, and a page's position in the book decides which half of which image it shows, using standard folded-booklet order: for an N-page zine, the front of sheet *k* is pages N−2k | 2k+1 and the back is 2k+2 | N−2k−1. The page turn is a CSS 3D rotation, and the PDF and ZIP writers are built in, so there are no runtime dependencies.
+ZineSplit never edits your images. Each page is a box showing one half of a sheet image, and a page's position in the book decides which half of which image it shows, using standard folded-booklet order: for an N-page zine, the front of sheet *k* is pages N−2k | 2k+1 and the back is 2k+2 | N−2k−1. The page turn is a CSS 3D rotation, and the PDF and ZIP writers are built in.
 
-The app is [`index.html`](index.html) plus a `fonts` folder. Windows and Linux builds wrap it in [Electron](https://www.electronjs.org), Android wraps it with [Capacitor](https://capacitorjs.com), and the browser build packs it into one self-contained HTML file.
-
-## Development
-
-```sh
-npm install
-npm run desktop        # run the desktop app
-npm run dist           # build installers for this OS into dist/
-npm run web:single     # build the one-file browser version into dist-web/
-npx cap add android    # once, then:
-npm run android:sync
-cd android && ./gradlew assembleDebug    # test APK in android/app/build/outputs/apk/debug/
-```
-
-Windows builds need Windows, Linux builds need Linux, and Android needs the Android SDK and Java 21. To try changes quickly, open `index.html` in a browser and use **Add a sample zine**.
-
-### Releasing
-
-The [release workflow](.github/workflows/release.yml) builds everything on GitHub. Bump `version` in `package.json`, add a section to [CHANGELOG.md](CHANGELOG.md), then push a tag:
-
-```sh
-git tag v2.1.0
-git push origin v2.1.0
-```
-
-The Windows, Linux, Android and browser files are attached to a new release, with the changelog section as its notes. The APK is signed with the key in the `ANDROID_KEYSTORE_B64` and `ANDROID_KEYSTORE_PASSWORD` repository secrets; always use the same key, or phones will refuse the update. Copy the new `ZineSplit-x.y.z.html` to [zinesplit-app](https://github.com/hamza-dv/zinesplit-app) as `index.html` to update the iPhone web app.
-
-### Project layout
-
-```
-index.html            the whole app
-fonts/                bundled fonts for offline use
-electron/             Windows and Linux wrapper
-capacitor.config.json Android wrapper settings
-scripts/              build helpers (www/ folder, single-file HTML)
-assets/, build/, resources/   logo and app icons
-docs/                 README screenshots
-```
+The whole app is [`index.html`](index.html) plus a `fonts` folder: no frameworks, no build step, no dependencies.
 
 ## Contributing
 
-Issues and pull requests are welcome. Ideas that would be useful:
+Issues and pull requests are welcome. Edit `index.html`, open it in a browser, and test with **Add a sample zine**.
+
+Ideas that would be useful:
 
 - Open a single PDF and treat each page as a sheet
 - Right-to-left reading order

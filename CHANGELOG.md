@@ -5,8 +5,7 @@
 - New shelf: a magazine rack where every zine stands with its front cover out. Add, open and remove zines; they are saved on the device.
 - Export a zine as a PDF in page order, or as a ZIP of page images, from the shelf (hover a zine) or from the reader.
 - Zine names.
-- Windows, Linux and Android apps (Electron and Capacitor) with a GitHub Actions workflow that builds them from a tag.
-- Fonts are bundled so the apps work offline.
+- Fonts are bundled so ZineSplit works offline.
 
 ## 1.1.0
 
