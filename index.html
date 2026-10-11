@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
 /* Layout: slim tool bar. Setup view = pick page count, then one prompted drop per sheet image with a tile grid of folio-numbered sheets. Reader view = open book on a desk, dots underneath. */
 :root {
@@ -197,6 +198,72 @@ select {
   border: 3px dashed var(--accent); margin: 12px; border-radius: 16px; pointer-events: none;
 }
 
+
+/* ---------- shelf: a magazine rack, covers facing out ---------- */
+.brand { background: none; border: 0; color: inherit; font: inherit; padding: 0; cursor: pointer; text-align: left; }
+.brand:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+input[type="text"] { font: 500 1rem var(--font-body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; min-width: 230px; }
+input[type="text"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.shelfview { min-height: 0; overflow-y: auto; padding-block: 6px 56px; }
+.shelfwrap { max-width: 1120px; margin-inline: auto; }
+.shelfhead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; margin-bottom: 34px; }
+.shelfhead h2 { margin: 0; font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.3rem); line-height: 1.1; letter-spacing: -0.015em; }
+.shelfhead .lead { margin: 6px 0 0; color: var(--muted); max-width: 56ch; line-height: 1.5; }
+.shelfhead .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.rack { --cw: 156px; display: flex; flex-direction: column; align-items: center; gap: 40px; }
+.rrow {
+  position: relative; display: flex; padding: 22px 14px 0; border-radius: 10px 10px 0 0;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--panel) 75%, transparent), color-mix(in srgb, var(--panel) 25%, transparent));
+  box-shadow: inset 0 0 0 1px var(--line), inset 0 -34px 40px -30px rgba(0, 0, 0, 0.4);
+}
+.slot { position: relative; flex: none; width: calc(var(--cw) + 18px); padding-inline: 9px; display: flex; justify-content: center; align-items: flex-end; min-height: calc(var(--cw) * 1.545); }
+.mag {
+  position: relative; display: block; width: var(--cw); aspect-ratio: 5.5 / 8.5; padding: 0; border: 0; border-radius: 2px; cursor: pointer;
+  color: #fff; background-color: var(--paper); background-size: cover; background-position: center;
+  transform-origin: 50% 100%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25), 0 22px 26px -18px rgba(0, 0, 0, 0.8);
+  transition: transform 0.28s cubic-bezier(0.3, 0.7, 0.3, 1), box-shadow 0.28s;
+}
+.mag::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(100deg, rgba(0, 0, 0, 0.28) 0, rgba(255, 255, 255, 0.1) 3%, transparent 9%), linear-gradient(to bottom, rgba(255, 255, 255, 0.08), transparent 30%); }
+.mag:hover, .mag:focus-visible { transform: translateY(-12px); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25), 0 34px 30px -20px rgba(0, 0, 0, 0.8), 0 0 46px -8px var(--glow); }
+.mag:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.mag.plain { display: grid; place-items: center; padding: 14px; text-align: center; font: 800 1.35rem/1.05 var(--font-display); text-wrap: balance; }
+.mag.add { background: transparent; box-shadow: none; border: 2px dashed color-mix(in srgb, var(--accent) 70%, var(--line)); color: var(--accent); display: grid; place-content: center; gap: 8px; text-align: center; transform: none; }
+.mag.add::before { display: none; }
+.mag.add:hover, .mag.add:focus-visible { transform: translateY(-8px); background: color-mix(in srgb, var(--accent) 10%, transparent); box-shadow: none; }
+.mag.add b { font-size: 2.8rem; line-height: 1; font-weight: 500; }
+.mag.add span { font: 500 0.85rem var(--font-body); color: var(--ink); }
+.ledge {
+  position: absolute; left: -10px; right: -10px; bottom: -16px; height: 44px; z-index: 3; pointer-events: none; border-radius: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.07) 55%, rgba(255, 255, 255, 0.12));
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  box-shadow: 0 14px 22px -10px rgba(0, 0, 0, 0.7), inset 0 -1px 0 rgba(255, 255, 255, 0.12);
+}
+:root[data-theme="light"] .ledge { border-top-color: #fff; background: linear-gradient(to bottom, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.4)); box-shadow: 0 12px 18px -10px rgba(22, 29, 36, 0.4); }
+.cap { position: absolute; left: 6px; right: 6px; bottom: -10px; z-index: 4; height: 22px; display: flex; align-items: center; justify-content: center; padding-inline: 4px;
+  font: 500 0.7rem/1 var(--font-mono); color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+.x {
+  position: absolute; top: 8px; right: 14px; z-index: 5; height: 26px; min-width: 26px; padding: 0 8px; border: 0; border-radius: 13px; cursor: pointer;
+  background: rgba(0, 0, 0, 0.7); color: #fff; font: 600 0.8rem/1 var(--font-body); opacity: 0; transition: opacity 0.15s;
+}
+.slot:hover .x, .x:focus-visible, .x.sure { opacity: 1; }
+.x.sure { background: var(--accent); color: var(--accent-ink); }
+@media (hover: none) { .x { opacity: 0.9; } }
+.acts { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); z-index: 5; display: flex; gap: 6px; opacity: 0; transition: opacity 0.18s; }
+.slot:hover .acts, .acts:focus-within { opacity: 1; }
+@media (hover: none) { .acts { opacity: 1; } }
+.act { font: 600 0.72rem/1 var(--font-body); color: #fff; background: rgba(10, 12, 16, 0.84); border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 999px; padding: 8px 12px; cursor: pointer; white-space: nowrap; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.act:hover, .act:focus-visible { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); outline: none; }
+.toast {
+  position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 8px); z-index: 40; opacity: 0; pointer-events: none; max-width: calc(100% - 32px);
+  font: 500 0.88rem/1.3 var(--font-body); color: var(--ink); padding: 10px 16px; border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 94%, transparent); border: 1px solid var(--line); box-shadow: 0 10px 30px -10px var(--shadow);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
 /* ---------- immersive reading: only the book, arrows and numbered pages ---------- */
 body.reading {
   padding-inline: 0;
@@ -263,15 +330,18 @@ html[data-theme="light"] .themebtn .sun { display: none; }
 <body>
 
 <div class="bar">
-  <div class="brand">
+  <button class="brand" id="brandBtn" type="button" aria-label="ZineSplit, go to your shelf">
     <svg width="32" height="26" viewBox="70 110 372 292" aria-hidden="true"><rect x="81" y="120" width="168" height="272" rx="10" fill="#fdfdfc"/><path d="M263 130a10 10 0 0 1 10-10H379L431 172V382a10 10 0 0 1-10 10H273a10 10 0 0 1-10-10Z" fill="#ff5d62" style="fill:var(--accent)"/><path d="M379 120 431 172H389a10 10 0 0 1-10-10Z" fill="#000" opacity=".25"/><path d="M256 134V388" stroke="currentColor" stroke-width="7" stroke-dasharray="0.1 28.5" stroke-linecap="round"/></svg>
     <h1>ZineSplit</h1>
-  </div>
+  </button>
   <div class="tools">
     <span class="toolset" id="readerTools" hidden>
+      <button class="btn" id="shelfBtn" type="button">Shelf</button>
       <button class="btn" id="editBtn" type="button">Edit pages</button>
       <button class="btn" id="viewBtn" type="button">Single page</button>
       <button class="btn" id="fsBtn" type="button">Full screen</button>
+      <button class="btn" id="imgBtn" type="button">Page images</button>
+      <button class="btn primary" id="pdfBtn" type="button">Export PDF</button>
     </span>
     <button class="btn themebtn" id="themeBtn" type="button" aria-label="Switch between dark and light" title="Switch between dark and light"><svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg></button>
   </div>
@@ -279,7 +349,23 @@ html[data-theme="light"] .themebtn .sun { display: none; }
 
 <div class="notice" id="notice" role="status"></div>
 
-<section class="setup" id="setupView" aria-label="Build your zine">
+<section class="shelfview" id="shelfView" aria-label="Your shelf">
+  <div class="shelfwrap">
+    <div class="shelfhead">
+      <div>
+        <h2 id="shelfTitle">Your shelf</h2>
+        <p class="lead" id="shelfLead"></p>
+      </div>
+      <div class="btns">
+        <button class="btn" id="sampleBtn" type="button">Add a sample zine</button>
+        <button class="btn primary" id="addBtn" type="button">Add a zine</button>
+      </div>
+    </div>
+    <div class="rack" id="rack"></div>
+  </div>
+</section>
+
+<section class="setup" id="setupView" aria-label="Build your zine" hidden>
   <div class="wrap">
     <div>
       <h2>Build your zine, one sheet at a time</h2>
@@ -287,6 +373,7 @@ html[data-theme="light"] .themebtn .sun { display: none; }
     </div>
 
     <div class="opts">
+      <label class="field" for="titleIn"><span>Zine name</span><input id="titleIn" type="text" maxlength="60" placeholder="Untitled zine" autocomplete="off"></label>
       <label class="field" for="totalSel"><span>Total pages in the zine</span><select id="totalSel"></select></label>
       <div class="field">
         <span>How the images are arranged</span>
@@ -306,6 +393,7 @@ html[data-theme="light"] .themebtn .sun { display: none; }
         <div class="pbtns">
           <button class="btn primary" id="chooseBtn" type="button">Choose image</button>
           <button class="btn primary" id="readBtn2" type="button" hidden>Read your zine</button>
+          <button class="btn" id="saveBtn2" type="button" hidden>Save to shelf</button>
           <span class="aside" id="pdrop">or drop it anywhere on this page</span>
         </div>
         <input id="fileInput" type="file" accept="image/*" multiple hidden>
@@ -317,12 +405,12 @@ html[data-theme="light"] .themebtn .sun { display: none; }
 
     <div class="actions">
       <button class="btn primary" id="readBtn" type="button">Read what I have</button>
+      <button class="btn" id="saveBtn" type="button">Save to shelf</button>
       <button class="btn" id="clearBtn" type="button">Clear all</button>
-      <button class="btn" id="sampleBtn" type="button">See a sample zine</button>
       <span class="spacer"></span>
       <span class="aside" id="fillCount"></span>
     </div>
-    <p class="aside" style="margin:0">Dropping several files at once fills the next sheets in file-name order. Click any sheet above to replace it. Sheets left empty show as blank pages. Your images stay in this browser tab.</p>
+    <p class="aside" style="margin:0">Dropping several files at once fills the next sheets in file-name order. Click any sheet above to replace it. Sheets left empty show as blank pages. Your images stay on this device.</p>
   </div>
 </section>
 
@@ -341,6 +429,7 @@ html[data-theme="light"] .themebtn .sun { display: none; }
   </footer>
 </div>
 
+<div class="toast" id="toast" role="status"></div>
 <div class="fshint" id="fshint" aria-hidden="true">&larr; &rarr; turn pages &nbsp;·&nbsp; Esc exits</div>
 
 <div class="veil" id="veil" hidden>Drop to fill the next sheets</div>
@@ -352,8 +441,9 @@ html[data-theme="light"] .themebtn .sun { display: none; }
   var DUR = 700;
   var scene = $('scene'), book = $('book');
   var state = {
-    view: 'setup', total: 24, layout: 'fold', slots: [], active: 0,
-    modePref: null, s: 0, p: 1, pages: [], N: 0, busy: false, pw: 0, lastMode: null, dotsKey: '', sample: false
+    view: 'shelf', total: 24, layout: 'fold', slots: [], active: 0,
+    modePref: null, s: 0, p: 1, pages: [], N: 0, busy: false, pw: 0, lastMode: null, dotsKey: '', sample: false,
+    metas: [], coverUrls: [], zineId: null, title: '', exporting: false
   };
 
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
@@ -407,7 +497,7 @@ html[data-theme="light"] .themebtn .sun { display: none; }
       $('pmeta').textContent = 'All ' + m + ' images added';
       $('ptitle').textContent = 'Your zine is ready to read';
       $('psub').textContent = 'Open it as a book and turn the pages. You can still click any sheet below to swap its image.';
-      $('chooseBtn').hidden = true; $('readBtn2').hidden = false; $('pdrop').hidden = true;
+      $('chooseBtn').hidden = true; $('readBtn2').hidden = false; $('saveBtn2').hidden = false; $('pdrop').hidden = true;
       $('fig').hidden = true;
     } else {
       var a = state.active, p2 = pairFor(a, state.total, state.layout);
@@ -416,7 +506,7 @@ html[data-theme="light"] .themebtn .sun { display: none; }
       $('pmeta').textContent = 'Image ' + (a + 1) + ' of ' + m + (state.slots[a] ? ' · replace' : '');
       $('ptitle').textContent = 'Drop the image with pages ' + lo + ' and ' + hi;
       $('psub').textContent = 'Left half is ' + nm(p2[0]) + '. Right half is ' + nm(p2[1]) + '.';
-      $('chooseBtn').hidden = false; $('readBtn2').hidden = true; $('pdrop').hidden = false;
+      $('chooseBtn').hidden = false; $('readBtn2').hidden = true; $('saveBtn2').hidden = true; $('pdrop').hidden = false;
       var fig = $('fig'); fig.hidden = false; fig.replaceChildren();
       p2.forEach(function (n) {
         var d = document.createElement('div'), b = document.createElement('b'), sm = document.createElement('small');
@@ -445,12 +535,31 @@ html[data-theme="light"] .themebtn .sun { display: none; }
     $('readBtn').disabled = filled === 0;
     $('readBtn').hidden = done;
     $('clearBtn').disabled = filled === 0;
+    $('saveBtn').disabled = filled === 0; $('saveBtn').hidden = done;
   }
 
+  /* The page colour of each half, read from the image's own corners, so blank edges match the PNG exactly. */
+  function sampleBg(im) {
+    try {
+      var w = im.naturalWidth, h = im.naturalHeight, c = document.createElement('canvas'); c.width = w; c.height = h;
+      var g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(im, 0, 0);
+      var out = [];
+      [[0, w / 2], [w / 2, w]].forEach(function (rg) {
+        var pts = [[rg[0] + 3, 3], [rg[1] - 4, 3], [rg[0] + 3, h - 4], [rg[1] - 4, h - 4]], rs = [], gs = [], bs = [];
+        pts.forEach(function (q) {
+          var d = g.getImageData(Math.floor(q[0]), Math.floor(q[1]), 1, 1).data;
+          if (d[3] > 250) { rs.push(d[0]); gs.push(d[1]); bs.push(d[2]); }
+        });
+        var med = function (a) { a.sort(function (x, y) { return x - y; }); return a[a.length >> 1]; };
+        out.push(rs.length ? 'rgb(' + med(rs) + ',' + med(gs) + ',' + med(bs) + ')' : null);
+      });
+      return out;
+    } catch (e) { return [null, null]; }
+  }
   function readImage(file) {
     return new Promise(function (res) {
       var url = URL.createObjectURL(file), im = new Image();
-      im.onload = function () { res({ url: url, w: im.naturalWidth, h: im.naturalHeight, name: file.name }); };
+      im.onload = function () { res({ url: url, w: im.naturalWidth, h: im.naturalHeight, name: file.name, bg: sampleBg(im), blob: file }); };
       im.onerror = function () { URL.revokeObjectURL(url); res(null); };
       im.src = url;
     });
@@ -489,9 +598,15 @@ html[data-theme="light"] .themebtn .sun { display: none; }
   }
 
   /* ---------- sample zine ---------- */
-  function makeSample() {
-    var N = 24, W = 1100, H = 850, jobs = [];
-    for (var i = 0; i < 12; i++) {
+  var SAMPLES = [
+    { title: 'Sample Zine', t1: 'SAMPLE', t2: 'ZINE', sub: 'a 24-page sample', total: 24, cover: '#c9242b', back: '#1b2228', hue: 190 },
+    { title: 'Field Notes', t1: 'FIELD', t2: 'NOTES', sub: 'a 12-page sample', total: 12, cover: '#0f7b83', back: '#102a2d', hue: 165 },
+    { title: 'Night Shift', t1: 'NIGHT', t2: 'SHIFT', sub: 'an 8-page sample', total: 8, cover: '#7a3b8f', back: '#1c1226', hue: 285 }
+  ];
+  function makeSample(v) {
+    v = v || SAMPLES[0];
+    var N = v.total, W = 1100, H = 850, jobs = [];
+    for (var i = 0; i < N / 2; i++) {
       (function (i) {
         var pr = pairFor(i, N, 'fold');
         var c = document.createElement('canvas'); c.width = W; c.height = H;
@@ -499,12 +614,12 @@ html[data-theme="light"] .themebtn .sun { display: none; }
         pr.forEach(function (n, hf) {
           var x = hf * W / 2, cx = x + W / 4;
           var cover = n === 1, back = n === N;
-          g.fillStyle = cover ? '#c9242b' : (back ? '#1b2228' : 'hsl(' + ((n * 31 + 190) % 360) + ' 34% 90%)');
+          g.fillStyle = cover ? v.cover : (back ? v.back : 'hsl(' + ((n * 31 + v.hue) % 360) + ' 34% 90%)');
           g.fillRect(x, 0, W / 2, H);
           g.fillStyle = (cover || back) ? '#ffffff' : '#1b2228'; g.textAlign = 'center';
           if (cover) {
-            g.font = '700 92px "Arial Narrow", Arial, sans-serif'; g.fillText('SAMPLE', cx, 360); g.fillText('ZINE', cx, 450);
-            g.font = '400 24px Arial, sans-serif'; g.fillText('Build your own from the first screen', cx, 520);
+            g.font = '700 92px "Arial Narrow", Arial, sans-serif'; g.fillText(v.t1, cx, 360); g.fillText(v.t2, cx, 450);
+            g.font = '400 24px Arial, sans-serif'; g.fillText(v.sub, cx, 520);
           } else if (back) {
             g.font = '700 64px "Arial Narrow", Arial, sans-serif'; g.fillText('BACK COVER', cx, 440);
           } else {
@@ -518,7 +633,7 @@ html[data-theme="light"] .themebtn .sun { display: none; }
           g.fillText(String(n).padStart(2, '0'), hf ? x + W / 2 - 18 : x + 18, 38);
         });
         jobs.push(new Promise(function (res) {
-          c.toBlob(function (b) { res({ url: URL.createObjectURL(b), w: W, h: H, name: 'Sample sheet ' + (i + 1) + '.jpg' }); }, 'image/jpeg', 0.88);
+          c.toBlob(function (b) { res({ url: URL.createObjectURL(b), w: W, h: H, name: 'Sample sheet ' + (i + 1) + '.jpg', blob: b, bg: [null, null] }); }, 'image/jpeg', 0.88);
         }));
       })(i);
     }
@@ -554,6 +669,7 @@ html[data-theme="light"] .themebtn .sun { display: none; }
     if (p) {
       f.style.backgroundImage = 'url("' + p.sh.url + '")';
       f.style.backgroundPosition = p.half ? '100% 0' : '0 0';
+      var bgc = p.sh.bg && p.sh.bg[p.half]; if (bgc) f.style.backgroundColor = bgc;
     }
     return f;
   }
@@ -686,26 +802,370 @@ html[data-theme="light"] .themebtn .sun { display: none; }
     $('viewBtn').textContent = spread ? 'Single page' : 'Two-page spread';
   }
 
+  /* =====================  SHELF + LIBRARY  ===================== */
+  var DBN = 'zinesplit', mem = { meta: {}, sheets: {} }, dbp = null;
+  function reqP(r) { return new Promise(function (res, rej) { r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error); }; }); }
+  function openDB() {
+    if (dbp) return dbp;
+    dbp = new Promise(function (res) {
+      try {
+        var rq = indexedDB.open(DBN, 1);
+        rq.onupgradeneeded = function () { var d = rq.result; d.createObjectStore('meta', { keyPath: 'id' }); d.createObjectStore('sheets', { keyPath: 'id' }); };
+        rq.onsuccess = function () { res(rq.result); };
+        rq.onerror = function () { res(null); };
+      } catch (e) { res(null); }
+    });
+    return dbp;
+  }
+  var store = {
+    all: function () { return openDB().then(function (db) { if (!db) return Object.keys(mem.meta).map(function (k) { return mem.meta[k]; }); return reqP(db.transaction('meta').objectStore('meta').getAll()); }); },
+    sheets: function (id) { return openDB().then(function (db) { if (!db) return mem.sheets[id] ? { id: id, sheets: mem.sheets[id] } : null; return reqP(db.transaction('sheets').objectStore('sheets').get(id)); }); },
+    put: function (meta, sh) {
+      return openDB().then(function (db) {
+        if (!db) { mem.meta[meta.id] = meta; mem.sheets[meta.id] = sh; return; }
+        return new Promise(function (res, rej) {
+          var t = db.transaction(['meta', 'sheets'], 'readwrite');
+          t.objectStore('meta').put(meta); t.objectStore('sheets').put({ id: meta.id, sheets: sh });
+          t.oncomplete = function () { res(); }; t.onerror = t.onabort = function () { rej(t.error); };
+        });
+      });
+    },
+    del: function (id) {
+      return openDB().then(function (db) {
+        if (!db) { delete mem.meta[id]; delete mem.sheets[id]; return; }
+        return new Promise(function (res, rej) {
+          var t = db.transaction(['meta', 'sheets'], 'readwrite');
+          t.objectStore('meta').delete(id); t.objectStore('sheets').delete(id);
+          t.oncomplete = function () { res(); }; t.onerror = t.onabort = function () { rej(t.error); };
+        });
+      });
+    }
+  };
+
+  var toastT = 0;
+  function toast(msg, ms) {
+    var t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT);
+    toastT = setTimeout(function () { t.classList.remove('on'); }, ms || 2600);
+  }
+  function newId() { return 'z' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function releaseSlots() { state.slots.forEach(function (s) { if (s) try { URL.revokeObjectURL(s.url); } catch (e) {} }); state.slots = []; }
+
+  /* The cover is page 1: the right half of the first sheet in printed order, or the left half when images hold consecutive pages. */
+  function makeCover(total, layout, slots) {
+    var found = null, half = 0;
+    for (var i = 0; i < slots.length; i++) {
+      var pr = pairFor(i, total, layout);
+      if (pr[0] === 1) { found = slots[i]; half = 0; break; }
+      if (pr[1] === 1) { found = slots[i]; half = 1; break; }
+    }
+    if (!found) return Promise.resolve(null);
+    return new Promise(function (res) {
+      var im = new Image();
+      im.onload = function () {
+        try {
+          var cw = 380, ch = Math.round(cw * im.naturalHeight / (im.naturalWidth / 2));
+          var c = document.createElement('canvas'); c.width = cw; c.height = ch;
+          var g = c.getContext('2d'); g.fillStyle = (found.bg && found.bg[half]) || '#ffffff'; g.fillRect(0, 0, cw, ch);
+          g.drawImage(im, half * im.naturalWidth / 2, 0, im.naturalWidth / 2, im.naturalHeight, 0, 0, cw, ch);
+          c.toBlob(function (b) { res(b); }, 'image/jpeg', 0.86);
+        } catch (e) { res(null); }
+      };
+      im.onerror = function () { res(null); };
+      im.src = found.url;
+    });
+  }
+
+  function saveZine(id, title, total, layout, slots) {
+    return makeCover(total, layout, slots).then(function (cover) {
+      var prev = state.metas.filter(function (m) { return m.id === id; })[0];
+      var meta = { id: id, title: title, total: total, layout: layout, updated: Date.now(), created: prev ? prev.created : Date.now(), cover: cover, count: slots.filter(Boolean).length };
+      var sh = slots.map(function (s) { return s ? { name: s.name, w: s.w, h: s.h, bg: s.bg || [null, null], blob: s.blob } : null; });
+      return store.put(meta, sh).then(function () { return meta; });
+    });
+  }
+  function saveCurrent() {
+    if (!filledCount()) return Promise.resolve(null);
+    var id = state.zineId || newId();
+    var title = ($('titleIn').value || '').trim() || 'Untitled zine';
+    state.title = title;
+    return saveZine(id, title, state.total, state.layout, state.slots.slice()).then(function (meta) {
+      state.zineId = id;
+      var k = state.metas.map(function (m) { return m.id; }).indexOf(id);
+      if (k >= 0) state.metas[k] = meta; else state.metas.push(meta);
+      return meta;
+    });
+  }
+
+  function hueOf(s) { var x = 0; for (var i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) % 360; return x; }
+
+  function renderShelf() {
+    if (state.view !== 'shelf') return;
+    state.coverUrls.forEach(function (u) { try { URL.revokeObjectURL(u); } catch (e) {} }); state.coverUrls = [];
+    var rack = $('rack'), avail = Math.min(1120, $('shelfView').clientWidth || 800);
+    var cw = avail < 460 ? 118 : (avail > 900 ? 172 : 156), per = Math.max(1, Math.floor((avail - 28) / (cw + 18)));
+    rack.style.setProperty('--cw', cw + 'px');
+    var metas = state.metas.slice().sort(function (a, b) { return (a.created || 0) - (b.created || 0); });
+    var items = metas.map(function (m) { return { m: m }; }); items.push({ add: true });
+    var rows = [];
+    for (var k = 0; k < items.length; k += per) rows.push(items.slice(k, k + per));
+    while (rows.length < 2) rows.push([]);
+    rack.replaceChildren();
+    rows.forEach(function (row) {
+      var r = document.createElement('div'); r.className = 'rrow';
+      for (var q = 0; q < per; q++) {
+        var it = row[q], slot = document.createElement('div'); slot.className = 'slot';
+        if (it && it.add) {
+          var a = document.createElement('button'); a.type = 'button'; a.className = 'mag add'; a.setAttribute('aria-label', 'Add a zine');
+          a.innerHTML = '<b aria-hidden="true">+</b><span>Add a zine</span>'; a.addEventListener('click', addZine); slot.appendChild(a);
+        } else if (it) {
+          (function (m) {
+            var b = document.createElement('button'); b.type = 'button'; b.className = 'mag';
+            b.setAttribute('aria-label', m.title + ', ' + m.total + ' pages. Open to read.');
+            if (m.cover) { var u = URL.createObjectURL(m.cover); state.coverUrls.push(u); b.style.backgroundImage = 'url("' + u + '")'; }
+            else { b.classList.add('plain'); b.style.backgroundColor = 'hsl(' + hueOf(m.title) + ' 45% 30%)'; b.textContent = m.title; }
+            b.addEventListener('click', function () { openZine(m.id); });
+            slot.appendChild(b);
+            var cap = document.createElement('div'); cap.className = 'cap'; cap.textContent = m.title; slot.appendChild(cap);
+            var x = document.createElement('button'); x.type = 'button'; x.className = 'x'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + m.title + ' from the shelf');
+            x.addEventListener('click', function (e) {
+              e.stopPropagation();
+              if (x.classList.contains('sure')) { store.del(m.id).then(function () { state.metas = state.metas.filter(function (z) { return z.id !== m.id; }); renderShelf(); toast('Removed ' + m.title + '.'); }); return; }
+              x.classList.add('sure'); x.textContent = 'Remove?';
+              setTimeout(function () { x.classList.remove('sure'); x.textContent = '×'; }, 3200);
+            });
+            slot.appendChild(x);
+            var acts = document.createElement('div'); acts.className = 'acts';
+            [['PDF', 'pdf', 'Download ' + m.title + ' as a PDF in page order'], ['Images', 'png', 'Download ' + m.title + ' as separate page images (ZIP) for printing']].forEach(function (d) {
+              var a = document.createElement('button'); a.type = 'button'; a.className = 'act'; a.textContent = d[0]; a.setAttribute('aria-label', d[2]); a.title = d[2];
+              a.addEventListener('click', function (e) { e.stopPropagation(); exportFromShelf(m, d[1]); });
+              acts.appendChild(a);
+            });
+            slot.appendChild(acts);
+          })(it.m);
+        }
+        r.appendChild(slot);
+      }
+      var l = document.createElement('div'); l.className = 'ledge'; r.appendChild(l);
+      rack.appendChild(r);
+    });
+    var n = metas.length;
+    $('shelfTitle').textContent = n ? 'Your shelf' : 'Your shelf is empty';
+    $('shelfLead').textContent = n ? n + (n === 1 ? ' zine' : ' zines') + ' standing here. Tap a cover to read it, or add another.' : 'Add a zine and it stands here with its front cover facing out. Tap one to read it.';
+  }
+  function loadShelf() {
+    return store.all().then(function (list) { state.metas = list || []; renderShelf(); }).catch(function () { renderShelf(); });
+  }
+
+  function addZine() {
+    releaseSlots(); fitSlots(); state.zineId = null; state.title = ''; state.sample = false; state.active = 0;
+    $('titleIn').value = '';
+    showSetup();
+  }
+  function openZine(id) {
+    var meta = state.metas.filter(function (m) { return m.id === id; })[0]; if (!meta) return;
+    enterFs();
+    store.sheets(id).then(function (rec) {
+      if (!rec) { toast('Could not open that zine.'); return; }
+      releaseSlots();
+      state.total = meta.total; state.layout = meta.layout; state.zineId = id; state.title = meta.title; state.sample = false;
+      state.slots = (rec.sheets || []).map(function (s) { return s && s.blob ? { url: URL.createObjectURL(s.blob), w: s.w, h: s.h, name: s.name, blob: s.blob, bg: s.bg || [null, null] } : null; });
+      fitSlots(); state.active = 0; $('titleIn').value = meta.title;
+      showReader();
+    });
+  }
+  function leaveToShelf() {
+    if (state.view === 'setup' && filledCount()) { saveCurrent().then(function () { toast('Saved to your shelf.'); showShelf(); }); }
+    else showShelf();
+  }
+
+  /* =====================  EXPORT PDF  ===================== */
+  /* Every page, in reading order, cut from its sheet and written into one PDF (JPEG pages, no libraries). */
+  function buildPdf(pages, title) {
+    var enc = new TextEncoder(), parts = [], offs = [], len = 0;
+    function put(x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; }
+    function obj(n, head, stream) {
+      offs[n] = len; put(n + ' 0 obj\n' + head);
+      if (stream) { put('\nstream\n'); put(stream); put('\nendstream'); }
+      put('\nendobj\n');
+    }
+    var nObj = 2 + pages.length * 3 + 1, kids = [];
+    put('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+    obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+    pages.forEach(function (p, i) {
+      var po = 3 + i * 3, W = p.W.toFixed(2), H = p.H.toFixed(2);
+      kids.push(po + ' 0 R');
+      obj(po, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + W + ' ' + H + '] /Contents ' + (po + 1) + ' 0 R /Resources << ' + (p.jpeg ? '/XObject << /Im0 ' + (po + 2) + ' 0 R >> ' : '') + '>> >>');
+      var cs = p.jpeg ? 'q ' + W + ' 0 0 ' + H + ' 0 0 cm /Im0 Do Q' : 'q 1 1 1 rg 0 0 ' + W + ' ' + H + ' re f Q';
+      obj(po + 1, '<< /Length ' + cs.length + ' >>', enc.encode(cs));
+      if (p.jpeg) obj(po + 2, '<< /Type /XObject /Subtype /Image /Width ' + p.w + ' /Height ' + p.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + p.jpeg.length + ' >>', p.jpeg);
+      else obj(po + 2, 'null');
+    });
+    obj(2, '<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + pages.length + ' >>');
+    var hex = '';
+    for (var c = 0; c < title.length; c++) hex += ('000' + title.charCodeAt(c).toString(16)).slice(-4);
+    var info = nObj; obj(info, '<< /Title <FEFF' + hex + '> /Producer (ZineSplit) >>');
+    var xr = len;
+    put('xref\n0 ' + (info + 1) + '\n0000000000 65535 f \n');
+    for (var n = 1; n <= info; n++) put(('0000000000' + (offs[n] || 0)).slice(-10) + ' 00000 n \n');
+    put('trailer\n<< /Size ' + (info + 1) + ' /Root 1 0 R /Info ' + info + ' 0 R >>\nstartxref\n' + xr + '\n%%EOF\n');
+    return new Blob(parts, { type: 'application/pdf' });
+  }
+
+  function blobToBase64(b) {
+    return new Promise(function (res, rej) { var fr = new FileReader(); fr.onload = function () { res(String(fr.result).split(',')[1]); }; fr.onerror = rej; fr.readAsDataURL(b); });
+  }
+  function saveFile(blob, name) {
+    if (typeof window.ZS_SAVE === 'function') return Promise.resolve(window.ZS_SAVE(blob, name));
+    var C = window.Capacitor, P = C && C.Plugins;
+    if (C && C.isNativePlatform && C.isNativePlatform() && P && P.Filesystem && P.Share) {
+      return blobToBase64(blob).then(function (b64) { return P.Filesystem.writeFile({ path: name, data: b64, directory: 'CACHE' }); })
+        .then(function (r) { return P.Share.share({ title: name, url: r.uri, dialogTitle: 'Save or share your zine PDF' }); });
+    }
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    return Promise.resolve();
+  }
+
+  var crcT = null;
+  function crc32(b) {
+    if (!crcT) { crcT = new Uint32Array(256); for (var n = 0; n < 256; n++) { var c0 = n; for (var k = 0; k < 8; k++) c0 = c0 & 1 ? 0xEDB88320 ^ (c0 >>> 1) : c0 >>> 1; crcT[n] = c0 >>> 0; } }
+    var c = 0xFFFFFFFF; for (var i = 0; i < b.length; i++) c = crcT[(c ^ b[i]) & 255] ^ (c >>> 8);
+    return (c ^ 0xFFFFFFFF) >>> 0;
+  }
+  /* Plain ZIP (stored, no compression): PNG and JPEG are already compressed. */
+  function buildZip(files) {
+    var enc = new TextEncoder(), parts = [], cd = [], off = 0, d = new Date();
+    var dt = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1), dd = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+    files.forEach(function (f) {
+      var nm = enc.encode(f.name), crc = crc32(f.bytes), sz = f.bytes.length;
+      var lh = new DataView(new ArrayBuffer(30));
+      lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true); lh.setUint16(10, dt, true); lh.setUint16(12, dd, true);
+      lh.setUint32(14, crc, true); lh.setUint32(18, sz, true); lh.setUint32(22, sz, true); lh.setUint16(26, nm.length, true); lh.setUint16(28, 0, true);
+      parts.push(new Uint8Array(lh.buffer), nm, f.bytes);
+      var ch = new DataView(new ArrayBuffer(46));
+      ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true); ch.setUint16(12, dt, true); ch.setUint16(14, dd, true);
+      ch.setUint32(16, crc, true); ch.setUint32(20, sz, true); ch.setUint32(24, sz, true); ch.setUint16(28, nm.length, true); ch.setUint32(42, off, true);
+      cd.push(new Uint8Array(ch.buffer), nm); off += 30 + nm.length + sz;
+    });
+    var cdSize = 0; cd.forEach(function (x) { cdSize += x.length; });
+    var end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true); end.setUint32(12, cdSize, true); end.setUint32(16, off, true);
+    return new Blob(parts.concat(cd, [new Uint8Array(end.buffer)]), { type: 'application/zip' });
+  }
+
+  /* Which half of which sheet is each page, for any zine (not just the open one). */
+  function pagesFor(total, layout, slots) {
+    var pages = new Array(total + 1).fill(null);
+    slots.forEach(function (sh, i) { var pr = pairFor(i, total, layout); pages[pr[0]] = sh ? { sh: sh, half: 0 } : null; pages[pr[1]] = sh ? { sh: sh, half: 1 } : null; });
+    return pages;
+  }
+  /* Cut every page out of its sheet, in reading order. kind 'png' = lossless images, anything else = JPEG for the PDF. */
+  function cutPages(pages, N, kind, tick) {
+    var cache = {}, out = [], chain = Promise.resolve(), mime = kind === 'png' ? 'image/png' : 'image/jpeg';
+    function load(sh) {
+      if (!cache[sh.url]) cache[sh.url] = new Promise(function (res, rej) { var im = new Image(); im.onload = function () { res(im); }; im.onerror = rej; im.src = sh.url; });
+      return cache[sh.url];
+    }
+    function enc(c) { return new Promise(function (res) { c.toBlob(function (b) { b.arrayBuffer().then(function (ab) { res(new Uint8Array(ab)); }); }, mime, 0.92); }); }
+    for (var n = 1; n <= N; n++) (function (n) {
+      chain = chain.then(function () {
+        tick(n);
+        var p = pages[n]; if (!p) { out[n] = null; return; }
+        return load(p.sh).then(function (im) {
+          var w = im.naturalWidth, h = im.naturalHeight, cw = Math.round(w / 2);
+          var c = document.createElement('canvas'); c.width = cw; c.height = h;
+          var g = c.getContext('2d'); g.fillStyle = (p.sh.bg && p.sh.bg[p.half]) || '#ffffff'; g.fillRect(0, 0, cw, h);
+          g.drawImage(im, p.half * (w / 2), 0, w / 2, h, 0, 0, cw, h);
+          return enc(c).then(function (bytes) { out[n] = { bytes: bytes, w: cw, h: h }; c.width = c.height = 0; });
+        });
+      });
+    })(n);
+    return chain.then(function () {
+      var ref = null, k;
+      for (k = 1; k <= N; k++) if (out[k]) { ref = out[k]; break; }
+      if (!ref) return Promise.reject(new Error('empty'));
+      var fill = Promise.resolve();
+      for (k = 1; k <= N; k++) (function (k) {
+        if (out[k]) return;
+        fill = fill.then(function () {
+          if (kind !== 'png') { out[k] = { bytes: null, w: ref.w, h: ref.h }; return; }
+          var c = document.createElement('canvas'); c.width = ref.w; c.height = ref.h;
+          var g = c.getContext('2d'); g.fillStyle = '#ffffff'; g.fillRect(0, 0, ref.w, ref.h);
+          return enc(c).then(function (b) { out[k] = { bytes: b, w: ref.w, h: ref.h }; });
+        });
+      })(k);
+      return fill.then(function () { return out.slice(1); });
+    });
+  }
+  function runExport(job, kind, tick) {
+    return cutPages(pagesFor(job.total, job.layout, job.slots), job.total, kind, tick).then(function (list) {
+      if (kind === 'pdf') {
+        return buildPdf(list.map(function (o) { var W = 612 * o.w / o.h; return o.bytes ? { jpeg: o.bytes, w: o.w, h: o.h, W: W, H: 612 } : { W: W, H: 612 }; }), job.title);
+      }
+      var pad = Math.max(2, String(list.length).length);
+      return buildZip(list.map(function (o, i) { return { name: 'page-' + ('00' + (i + 1)).slice(-pad) + '.png', bytes: o.bytes }; }));
+    });
+  }
+  function doExport(job, kind, tick) {
+    if (state.exporting) { toast('Another export is still running.'); return Promise.resolve(); }
+    state.exporting = true;
+    var N = job.total;
+    return runExport(job, kind, function (n) { tick(n, N); }).then(function (blob) {
+      var base = (job.title || 'Zine').replace(/[\\/:*?"<>|]+/g, '').trim() || 'Zine';
+      return saveFile(blob, kind === 'pdf' ? base + '.pdf' : base + ' pages.zip').then(function (r) {
+        if (r === false) return;
+        toast(kind === 'pdf' ? 'PDF ready: ' + N + ' pages in reading order.' : 'Saved ' + N + ' page images in a ZIP, numbered in reading order.', 3800);
+      });
+    }).catch(function (err) { try { console.error('ZineSplit export failed', err); } catch (e2) {} toast('Could not export. Check that every sheet image still opens.', 4200); })
+      .then(function () { state.exporting = false; });
+  }
+  function exportFromReader(kind) {
+    if (state.view !== 'reader' || !state.N) return;
+    var btn = kind === 'pdf' ? $('pdfBtn') : $('imgBtn'), label = btn.textContent;
+    btn.disabled = true; document.body.classList.add('show-ui');
+    doExport({ title: state.title || 'Zine', total: state.total, layout: state.layout, slots: state.slots }, kind, function (n, N) { btn.textContent = 'Exporting ' + n + ' of ' + N; })
+      .then(function () { btn.disabled = false; btn.textContent = label; });
+  }
+  function exportFromShelf(m, kind) {
+    if (state.exporting) { toast('Another export is still running.'); return; }
+    toast('Opening ' + m.title + '…', 60000);
+    store.sheets(m.id).then(function (rec) {
+      if (!rec) { toast('Could not open that zine.'); return; }
+      var slots = (rec.sheets || []).map(function (s) { return s && s.blob ? { url: URL.createObjectURL(s.blob), w: s.w, h: s.h, bg: s.bg || [null, null] } : null; });
+      return doExport({ title: m.title, total: m.total, layout: m.layout, slots: slots }, kind, function (n, N) { toast('Exporting ' + m.title + ': page ' + n + ' of ' + N, 60000); })
+        .then(function () { slots.forEach(function (s) { if (s) try { URL.revokeObjectURL(s.url); } catch (e) {} }); });
+    });
+  }
+
   /* ---------- switching views ---------- */
+  function showShelf() {
+    state.view = 'shelf';
+    $('shelfView').hidden = false; $('setupView').hidden = true; $('readerView').hidden = true; $('readerTools').hidden = true;
+    document.body.classList.remove('reading', 'show-ui', 'fs', 'idle');
+    if (document.fullscreenElement) { try { var q = document.exitFullscreen(); if (q && q.catch) q.catch(function () {}); } catch (e) {} }
+    notice('', '');
+    renderShelf(); loadShelf();
+  }
   function showSetup() {
     state.view = 'setup';
-    $('setupView').hidden = false; $('readerView').hidden = true; $('readerTools').hidden = true;
-    document.body.classList.remove('reading', 'show-ui');
+    $('shelfView').hidden = true; $('setupView').hidden = false; $('readerView').hidden = true; $('readerTools').hidden = true;
+    document.body.classList.remove('reading', 'show-ui', 'fs', 'idle');
     if (document.fullscreenElement) { try { var q = document.exitFullscreen(); if (q && q.catch) q.catch(function () {}); } catch (e) {} }
     renderSetup();
+    notice(filledCount() ? 'Editing ' + (state.title || 'this zine') + '. Changes save when you read it or save it to the shelf.' : 'Name your zine, choose the page count, then drop the first image.', filledCount() ? 'Edit' : 'Step 1');
   }
   function showReader() {
     if (!filledCount()) return;
     state.view = 'reader'; state.s = 0; state.p = 1; state.dotsKey = ''; state.lastMode = null;
     build();
-    $('setupView').hidden = true; $('readerView').hidden = false; $('readerTools').hidden = false;
+    $('shelfView').hidden = true; $('setupView').hidden = true; $('readerView').hidden = false; $('readerTools').hidden = false;
     document.body.classList.add('reading');
     render();
     pokeUI(4200);
     var m = M(), f = filledCount();
-    if (state.sample) notice('Sample zine, 24 numbered pages. Choose Edit pages to build your own.', 'Sample');
-    else if (f < m) notice((m - f) + ' sheet' + (m - f === 1 ? ' is' : 's are') + ' still empty and show as blank pages. Choose Edit pages to add them.', 'Partial', true);
-    else notice(state.total + ' pages, cover first and back cover last.', 'Ready');
+    if (f < m) notice((m - f) + ' sheet' + (m - f === 1 ? ' is' : 's are') + ' still empty and show as blank pages. Choose Edit pages to add them.', 'Partial', true);
+    else notice((state.title ? state.title + ': ' : '') + state.total + ' pages, cover first and back cover last.', 'Ready');
   }
 
   /* ---------- events: setup ---------- */
@@ -730,17 +1190,27 @@ html[data-theme="light"] .themebtn .sun { display: none; }
   function enterFs() {
     try { if (document.fullscreenEnabled && !document.fullscreenElement) { var y = document.documentElement.requestFullscreen(); if (y && y.catch) y.catch(function () {}); } } catch (e) {}
   }
-  $('readBtn').addEventListener('click', function () { enterFs(); showReader(); });
-  $('readBtn2').addEventListener('click', function () { enterFs(); showReader(); });
+  function readNow() { enterFs(); saveCurrent().then(showReader); }
+  function saveToShelf() { saveCurrent().then(function () { toast('Saved to your shelf.'); showShelf(); }); }
+  $('readBtn').addEventListener('click', readNow);
+  $('readBtn2').addEventListener('click', readNow);
+  $('saveBtn').addEventListener('click', saveToShelf);
+  $('saveBtn2').addEventListener('click', saveToShelf);
+  $('titleIn').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('fileInput').click(); } });
+  $('brandBtn').addEventListener('click', leaveToShelf);
+  $('shelfBtn').addEventListener('click', function () { if (!state.busy) leaveToShelf(); });
+  $('addBtn').addEventListener('click', addZine);
+  $('pdfBtn').addEventListener('click', function () { exportFromReader('pdf'); });
+  $('imgBtn').addEventListener('click', function () { exportFromReader('png'); });
   $('clearBtn').addEventListener('click', clearAll);
   $('sampleBtn').addEventListener('click', function () {
-    enterFs();
-    notice('Preparing sample…', '');
-    makeSample().then(function (list) {
-      state.slots.forEach(function (s) { if (s) try { URL.revokeObjectURL(s.url); } catch (e) {} });
-      state.total = 24; state.layout = 'fold'; state.slots = list; state.sample = true; state.active = 0;
-      showReader();
-    });
+    var v = SAMPLES[state.metas.length % SAMPLES.length], b = $('sampleBtn'); b.disabled = true; toast('Making a sample zine…');
+    makeSample(v).then(function (list) {
+      return saveZine(newId(), v.title, v.total, 'fold', list).then(function (meta) {
+        list.forEach(function (s) { try { URL.revokeObjectURL(s.url); } catch (e) {} });
+        state.metas.push(meta); renderShelf(); toast('Added ' + v.title + ' to your shelf.');
+      });
+    }).catch(function () { toast('Could not make the sample.'); }).then(function () { b.disabled = false; });
   });
 
   /* ---------- events: reader ---------- */
@@ -824,7 +1294,7 @@ html[data-theme="light"] .themebtn .sun { display: none; }
   var depth = 0, hotTile = null;
   function hasFiles(e) { return e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], 'Files') >= 0; }
   function tileAt(e) { var t = e.target && e.target.closest ? e.target.closest('.tile') : null; return t; }
-  window.addEventListener('dragenter', function (e) { if (hasFiles(e)) { depth++; if (state.view === 'setup') $('prompt').classList.add('drag'); else $('veil').hidden = false; } });
+  window.addEventListener('dragenter', function (e) { if (hasFiles(e)) { depth++; if (state.view === 'setup') $('prompt').classList.add('drag'); else if (state.view === 'reader') $('veil').hidden = false; } });
   window.addEventListener('dragover', function (e) {
     if (!hasFiles(e)) return; e.preventDefault();
     var t = state.view === 'setup' ? tileAt(e) : null;
@@ -841,6 +1311,7 @@ html[data-theme="light"] .themebtn .sun { display: none; }
     $('prompt').classList.remove('drag'); $('veil').hidden = true;
     var t = state.view === 'setup' ? tileAt(e) : null;
     if (hotTile) { hotTile.classList.remove('hot'); hotTile = null; }
+    if (state.view === 'shelf') { addZine(); fillFrom(0, e.dataTransfer.files); return; }
     if (state.view === 'reader') { showSetup(); }
     var start = t ? parseInt(t.dataset.i, 10) : state.active;
     fillFrom(start, e.dataTransfer.files);
@@ -848,8 +1319,29 @@ html[data-theme="light"] .themebtn .sun { display: none; }
 
   /* ---------- start ---------- */
   fitSlots();
-  renderSetup();
-  notice('Choose the total page count, then drop the first image.', 'Step 1');
+  new ResizeObserver(function () { if (state.view === 'shelf') renderShelf(); }).observe($('shelfView'));
+  showShelf();
+  /* Demo builds only: stock the shelf with three sample zines the first time it opens. */
+  function seedDemo() {
+    var seen = false; try { seen = localStorage.getItem('zs-demo') === '1'; } catch (e) {}
+    if (seen) return;
+    store.all().then(function (l) {
+      if (l && l.length) return;
+      var chain = Promise.resolve();
+      SAMPLES.forEach(function (v) {
+        chain = chain.then(function () {
+          return makeSample(v).then(function (list) {
+            return saveZine(newId(), v.title, v.total, 'fold', list).then(function (meta) {
+              list.forEach(function (s) { try { URL.revokeObjectURL(s.url); } catch (e) {} });
+              state.metas.push(meta); if (state.view === 'shelf') renderShelf();
+            });
+          });
+        });
+      });
+      return chain.then(function () { try { localStorage.setItem('zs-demo', '1'); } catch (e) {} });
+    });
+  }
+  if (window.ZS_DEMO) seedDemo();
 })();
 </script>
 

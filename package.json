@@ -1,16 +1,68 @@
 {
   "name": "zinesplit",
-  "version": "1.1.0",
-  "private": true,
-  "description": "Read your printed zine as a book.",
+  "version": "2.0.0",
+  "description": "Read your printed zine as a book. Keep zines on a shelf and export them as a PDF in page order.",
+  "author": "Hamza <deverahamza@gmail.com>",
   "license": "MIT",
+  "private": true,
+  "main": "electron/main.js",
   "scripts": {
-    "tauri": "tauri",
-    "dev": "tauri dev",
-    "build": "tauri build",
-    "android:build": "tauri android build --apk"
+    "web:build": "node scripts/make-www.js",
+    "desktop": "npm run web:build && electron .",
+    "dist": "npm run web:build && electron-builder --publish never",
+    "dist:win": "npm run web:build && electron-builder --win --x64 --publish never",
+    "dist:linux": "npm run web:build && electron-builder --linux --x64 --publish never",
+    "android:sync": "npm run web:build && cap sync android"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2"
-  }
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.0.0",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/filesystem": "^7.0.0",
+    "@capacitor/share": "^7.0.0"
+  },
+  "build": {
+    "appId": "app.zinesplit.reader",
+    "productName": "ZineSplit",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**",
+      "www/**",
+      "package.json"
+    ],
+    "artifactName": "ZineSplit-${version}-${os}-${arch}.${ext}",
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "ZineSplit-${version}-windows-setup.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Graphics",
+      "icon": "build/icon.png",
+      "maintainer": "Hamza <deverahamza@gmail.com>"
+    },
+    "portable": {
+      "artifactName": "ZineSplit-${version}-windows-portable.${ext}"
+    }
+  },
+  "repository": "github:hamza-dv/ZineSplit"
 }

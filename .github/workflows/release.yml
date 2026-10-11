@@ -1,148 +1,106 @@
-name: Release
+name: Build apps
 
-# Builds ZineSplit for Windows, Linux and Android and attaches the files to a
-# GitHub Release. Runs when a version tag (v1.2.0) is pushed, or by hand from
-# the Actions tab.
+# Push a tag like v2.0.0 to build the Windows, Linux and Android apps and attach them to a release.
 on:
   push:
-    tags: ["v*"]
+    tags: ['v*']
   workflow_dispatch:
 
 permissions:
   contents: write
 
-env:
-  GH_TOKEN: ${{ github.token }}
-
 jobs:
-  release:
-    name: Create draft release
-    runs-on: ubuntu-latest
-    outputs:
-      tag: ${{ steps.meta.outputs.tag }}
-      version: ${{ steps.meta.outputs.version }}
-    steps:
-      - uses: actions/checkout@v5
-      - id: meta
-        run: |
-          version=$(node -p "require('./src-tauri/tauri.conf.json').version")
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "tag=v$version" >> "$GITHUB_OUTPUT"
-      - name: Create or reuse the draft release
-        run: |
-          tag=${{ steps.meta.outputs.tag }}
-          if ! gh release view "$tag" >/dev/null 2>&1; then
-            awk -v v="## ${{ steps.meta.outputs.version }}" '$0==v{f=1;next} /^## /{f=0} f' CHANGELOG.md > notes.md
-            gh release create "$tag" --draft --title "ZineSplit $tag" --notes-file notes.md --target "$GITHUB_SHA"
-          fi
-      - name: Attach the browser version
-        run: |
-          cp index.html "ZineSplit-${{ steps.meta.outputs.version }}.html"
-          gh release upload "${{ steps.meta.outputs.tag }}" "ZineSplit-${{ steps.meta.outputs.version }}.html" --clobber
-
   desktop:
-    name: Build ${{ matrix.name }}
-    needs: release
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - name: Windows
-            os: windows-latest
-          - name: Linux
-            os: ubuntu-22.04
+        os: [windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-          cache: npm
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: swatinem/rust-cache@v2
+      - run: npm install
+      - run: npm run dist
+      - uses: actions/upload-artifact@v4
         with:
-          workspaces: src-tauri
-      - name: Install Linux build libraries
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-      - run: npm ci
-      - run: npx tauri build
-      - name: Upload to the release
-        shell: bash
-        run: |
-          v=${{ needs.release.outputs.version }}
-          b=src-tauri/target/release/bundle
-          mkdir out
-          if [ "$RUNNER_OS" = "Windows" ]; then
-            cp $b/nsis/*-setup.exe "out/ZineSplit-$v-windows-setup.exe"
-            cp $b/msi/*.msi        "out/ZineSplit-$v-windows.msi"
-          else
-            cp $b/appimage/*.AppImage "out/ZineSplit-$v-linux-x86_64.AppImage"
-            cp $b/deb/*.deb           "out/ZineSplit-$v-linux-amd64.deb"
-            cp $b/rpm/*.rpm           "out/ZineSplit-$v-linux-x86_64.rpm"
-          fi
-          gh release upload "${{ needs.release.outputs.tag }}" out/* --clobber
+          name: desktop-${{ matrix.os }}
+          path: |
+            dist/*.exe
+            dist/*.AppImage
+            dist/*.deb
 
   android:
-    name: Build Android
-    needs: release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-          cache: npm
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 17
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android
-      - uses: swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri
-      - run: npm ci
-      - name: Build the APK
-        run: |
-          export NDK_HOME="${ANDROID_NDK_LATEST_HOME:-$ANDROID_HOME/ndk/$(ls "$ANDROID_HOME/ndk" | sort -V | tail -1)}"
-          echo "Using NDK at $NDK_HOME"
-          npx tauri android init --ci
-          npx tauri icon assets/icon.svg
-          npx tauri android build --apk --target aarch64 armv7 x86_64
+          java-version: 21
+      # The Android SDK is already installed on GitHub's Ubuntu machines.
+      - run: npm install
+      - run: npm run web:build
+      - run: npx cap add android
+      - run: npx capacitor-assets generate --android --iconBackgroundColor '#161d24' --iconBackgroundColorDark '#161d24'
+      - run: npx cap sync android
+      - run: ./gradlew assembleRelease
+        working-directory: android
+      # Sign with the same key every time so new versions install as updates
+      # and keep the zines saved on the shelf.
       - name: Sign the APK
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
           KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
-          v=${{ needs.release.outputs.version }}
+          version=$(node -p "require('./package.json').version")
           tools="$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)"
-          apk=$(find src-tauri/gen/android/app/build/outputs/apk -name '*-release-unsigned.apk' | head -1)
-          "$tools/zipalign" -f -p 4 "$apk" aligned.apk
-          if [ -n "$KEYSTORE_B64" ]; then
-            echo "$KEYSTORE_B64" | base64 -d > release.p12
-            ks=release.p12; pass="$KEYSTORE_PASSWORD"; alias=zinesplit
-          else
-            # No release key configured yet: sign with a throwaway key so the
-            # APK still installs. Updates will need a reinstall once a real key is set.
-            echo "::warning::ANDROID_KEYSTORE_B64 is not set; signing the APK with a temporary key."
-            pass=temporary; alias=temp; ks=temp.p12
-            keytool -genkeypair -storetype PKCS12 -keystore $ks -alias $alias -keyalg RSA -keysize 2048 \
-              -validity 10000 -storepass $pass -keypass $pass -dname "CN=ZineSplit test"
-          fi
-          mkdir out
-          "$tools/apksigner" sign --ks "$ks" --ks-key-alias "$alias" --ks-pass "pass:$pass" \
-            --out "out/ZineSplit-$v-android.apk" aligned.apk
-          "$tools/apksigner" verify "out/ZineSplit-$v-android.apk"
-          rm -f release.p12
-      - run: gh release upload "${{ needs.release.outputs.tag }}" out/* --clobber
+          echo "$KEYSTORE_B64" | base64 -d > release.p12
+          "$tools/zipalign" -f -p 4 android/app/build/outputs/apk/release/app-release-unsigned.apk aligned.apk
+          "$tools/apksigner" sign --ks release.p12 --ks-key-alias zinesplit --ks-pass env:KEYSTORE_PASSWORD \
+            --out "ZineSplit-$version-android.apk" aligned.apk
+          "$tools/apksigner" verify "ZineSplit-$version-android.apk"
+          rm release.p12
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: ZineSplit-*-android.apk
 
-  publish:
-    name: Publish release
-    needs: [release, desktop, android]
+  web:
     runs-on: ubuntu-latest
     steps:
-      - run: gh release edit "${{ needs.release.outputs.tag }}" --draft=false --latest -R "$GITHUB_REPOSITORY"
+      - uses: actions/checkout@v5
+      - name: Package the browser version
+        run: |
+          version=$(node -p "require('./package.json').version")
+          mkdir -p "ZineSplit-$version-web"
+          cp -r index.html fonts LICENSE "ZineSplit-$version-web/"
+          zip -qr "ZineSplit-$version-web.zip" "ZineSplit-$version-web"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: ZineSplit-*-web.zip
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [desktop, android, web]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Release notes from the changelog
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          awk -v h="## $v" '$0==h{f=1;next} /^## /{f=0} f' CHANGELOG.md > notes.md
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: ZineSplit ${{ github.ref_name }}
+          body_path: notes.md
+          files: out/*

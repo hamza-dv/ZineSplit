@@ -1,14 +1,21 @@
 # Changelog
 
+## 2.0.0
+
+- New shelf: a magazine rack where every zine stands with its front cover out. Add, open and remove zines; they are saved on the device.
+- Export a zine as a PDF in page order, or as a ZIP of page images, from the shelf (hover a zine) or from the reader.
+- Zine names.
+- Windows, Linux and Android apps (Electron and Capacitor) with a GitHub Actions workflow that builds them from a tag.
+- Fonts are bundled so the apps work offline.
+
 ## 1.1.0
 
-- Downloadable apps: Windows installer, Linux AppImage / .deb / .rpm, and Android APK, alongside the single HTML file.
-- Dark theme by default, with a light theme one click away. The choice is remembered.
-- Numbered page buttons under the book (1, 2–3, 4–5 ... 24) replace the plain dots.
-- Distraction-free reading: the toolbar fades out while you read and comes back when you point at the top or tap.
-- Full screen starts automatically when you open the zine, and shows only the pages.
-- Space, Shift+Space, Page Up and Page Down turn pages.
-- Pure white paper and softer page shadows.
+- Dark theme by default, with a sun/moon switch (remembered in this browser).
+- Immersive reader: opening a zine goes full screen and shows only the book, the side arrows and numbered page buttons. Move the mouse to the top edge to bring the toolbar back.
+- Page dots are now numbered buttons (1, 2-3, 4-5 ... 24) that jump straight to that spread.
+- True full screen (F) hides everything except the pages: no logo, toolbar, arrows or numbers. Use the arrow keys; a hint fades after a few seconds and the cursor hides when idle.
+- Page colour is read from each image's own corners, so the app never shows a different white around your PNG.
+- New halftone desk texture, a lamp-lit glow behind the book, and a new logo mark in the toolbar.
 
 ## 1.0.0
 
