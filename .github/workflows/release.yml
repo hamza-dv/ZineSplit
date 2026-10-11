@@ -74,16 +74,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Package the browser version
-        run: |
-          version=$(node -p "require('./package.json').version")
-          mkdir -p "ZineSplit-$version-web"
-          cp -r index.html fonts LICENSE "ZineSplit-$version-web/"
-          zip -qr "ZineSplit-$version-web.zip" "ZineSplit-$version-web"
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      # One self-contained HTML file: fonts and icon embedded, iPhone Home Screen ready.
+      - run: node scripts/make-single-html.js
       - uses: actions/upload-artifact@v4
         with:
           name: web
-          path: ZineSplit-*-web.zip
+          path: dist-web/ZineSplit-*.html
 
   release:
     if: startsWith(github.ref, 'refs/tags/')

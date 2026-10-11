@@ -8,6 +8,7 @@
   "main": "electron/main.js",
   "scripts": {
     "web:build": "node scripts/make-www.js",
+    "web:single": "node scripts/make-single-html.js",
     "desktop": "npm run web:build && electron .",
     "dist": "npm run web:build && electron-builder --publish never",
     "dist:win": "npm run web:build && electron-builder --win --x64 --publish never",

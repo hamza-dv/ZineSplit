@@ -12,7 +12,8 @@
   <img alt="Windows" src="https://img.shields.io/badge/Windows-0078D4?style=flat-square&logo=windows&logoColor=white">
   <img alt="Linux" src="https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black">
   <img alt="Android" src="https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white">
-  <img alt="Browser" src="https://img.shields.io/badge/Browser-offline-161d24?style=flat-square">
+  <img alt="iOS" src="https://img.shields.io/badge/iOS-web%20app-000000?style=flat-square&logo=apple&logoColor=white">
+  <img alt="Browser" src="https://img.shields.io/badge/Browser-single%20HTML%20file-161d24?style=flat-square">
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-161d24?style=flat-square"></a>
 </p>
 
@@ -62,7 +63,8 @@ Download from the **[latest release](../../releases/latest)**.
 | **Windows 10 / 11** | `ZineSplit-x.y.z-windows-setup.exe` | Double-click to install. Or use `…-windows-portable.exe`, which runs without installing. If SmartScreen appears, choose **More info → Run anyway** (the app is not code-signed). |
 | **Linux** | `ZineSplit-x.y.z-linux-x86_64.AppImage` | `chmod +x` it and run. On Debian / Ubuntu you can instead `sudo apt install ./ZineSplit-*.deb`. |
 | **Android 7+** | `ZineSplit-x.y.z-android.apk` | Open it on your phone and allow installs from your browser or file manager the first time. New versions install over the old one and keep your shelf. |
-| **Any browser** | `ZineSplit-x.y.z-web.zip` | Unzip and double-click `index.html`. Same app, nothing to install, works offline. |
+| **iPhone / iPad** | Web app | Open ZineSplit's web link in **Safari**, tap **Share → Add to Home Screen**. It opens full screen with its own icon and keeps your shelf on the phone. (iOS can't run a downloaded HTML file, so it needs the link.) |
+| **Any browser** | `ZineSplit-x.y.z.html` | One file with everything inside. Double-click it to open. Nothing to install, works offline. |
 
 <p align="center">
   <img alt="Setup: choose the page count and drop each sheet when prompted" src="docs/setup.png" width="49%">
